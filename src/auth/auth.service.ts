@@ -36,6 +36,7 @@ export class AuthService {
         user.id,
         user.email,
         user.licenseExpiredDate,
+        user.licenseKey,
       );
 
       // update user's RT hash
@@ -67,6 +68,7 @@ export class AuthService {
       user.id,
       user.email,
       user.licenseExpiredDate,
+      user.licenseKey,
     );
 
     // update user's RT hash
@@ -96,7 +98,6 @@ export class AuthService {
         },
       });
 
-
       if (!user) throw new ForbiddenException('access denied');
 
       const compareRt = await argon.verify(user.rtHash, reqUser.refresh_token);
@@ -108,7 +109,7 @@ export class AuthService {
         user.email,
         user.licenseExpiredDate,
       );
-      
+
       // update user's RT hash
       await this.updateRtHash(user.id, tokens.rt);
       return tokens;
@@ -129,13 +130,13 @@ export class AuthService {
     userId: string,
     email: string,
     licenseExp: Date,
-    licenseKeyHash: string = '',
+    licenseKey: string = '',
   ) {
     const payload = {
       sub: userId,
       email,
       licenseExp,
-      licenseKeyHash,
+      licenseKey,
     };
 
     const [at, rt] = await Promise.all([
