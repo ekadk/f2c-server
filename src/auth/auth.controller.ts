@@ -4,6 +4,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { AccessTokenGuard } from './guards/at.guard';
+import { RefreshTokenGuard } from './guards/rt.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -26,7 +27,7 @@ export class AuthController {
     return this.authService.logout(user);
   }
 
-  @UseGuards(AuthGuard('rt-jwt'))
+  @UseGuards(RefreshTokenGuard)
   @Post('local/refresh')
   refreshToken(@Req() req: Request) {
     const user = req.user;
