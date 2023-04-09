@@ -3,6 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
+import { AccessTokenGuard } from './guards/at.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -18,7 +19,7 @@ export class AuthController {
     return this.authService.siginLocal(dto);
   }
 
-  @UseGuards(AuthGuard('at-jwt'))
+  @UseGuards(AccessTokenGuard)
   @Post('local/logout')
   logout(@Req() req: Request) {
     const user = req.user;
