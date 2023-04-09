@@ -74,10 +74,18 @@ export class AuthService {
     return tokens;
   }
 
-  async logout() {
-    return {
-      message: 'from logout',
-    };
+  async logout(user: any) {
+    try {
+      await this.prismaService.user.updateMany({
+        where: { id: user.sub, rtHash: { not: null } },
+        data: {
+          rtHash: null,
+        },
+      });
+      return { message: 'logged out successfully' };
+    } catch (error) {
+      return error;
+    }
   }
 
   async refreshToken() {
