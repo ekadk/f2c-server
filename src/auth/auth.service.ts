@@ -51,10 +51,27 @@ export class AuthService {
     }
   }
 
-  async siginLocal() {
-    return {
-      message: 'from signin-local',
-    };
+  async siginLocal(dto: AuthDto): Promise<Tokens> {
+    // finding user in DB
+    const user = await this.prismaService.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (!user) throw new ForbiddenException('invalid email/password');
+
+    // check if password match
+    const match = await argon.verify(user.password, dto.password);
+    if (!match) throw new ForbiddenException('invalid email or password!');
+
+    // create tokens
+    const tokens = await this.getTokens(
+      user.id,
+      user.email,
+      user.licenseExpiredDate,
+    );
+
+    // update user's RT hash
+    await this.updateRtHash(user.id, tokens.rt);
+    return tokens;
   }
 
   async logout() {

@@ -8,21 +8,21 @@ export class AuthController {
 
   @Post('local/signup')
   signupLocal(@Body() dto: AuthDto) {
-    return this.authService.signupLocal(dto)
+    return this.authService.signupLocal(dto);
   }
 
   @Post('local/signin')
-  siginLocal() {
-    return this.authService.siginLocal()
+  siginLocal(@Body() dto: AuthDto) {
+    return this.authService.siginLocal(dto);
   }
 
   @Post('local/logout')
   logout() {
-    return this.authService.logout()
+    return this.authService.logout();
   }
 
   @Post('local/refresh')
   refreshToken() {
-    return this.authService.refreshToken()
+    return this.authService.refreshToken();
   }
 }
