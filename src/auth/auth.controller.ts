@@ -21,12 +21,14 @@ export class AuthController {
   @UseGuards(AuthGuard('at-jwt'))
   @Post('local/logout')
   logout(@Req() req: Request) {
-    const user = req.user
+    const user = req.user;
     return this.authService.logout(user);
   }
 
+  @UseGuards(AuthGuard('rt-jwt'))
   @Post('local/refresh')
-  refreshToken() {
-    return this.authService.refreshToken();
+  refreshToken(@Req() req: Request) {
+    const user = req.user;
+    return this.authService.refreshToken(user);
   }
 }

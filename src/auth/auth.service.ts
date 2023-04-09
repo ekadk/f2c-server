@@ -88,10 +88,33 @@ export class AuthService {
     }
   }
 
-  async refreshToken() {
-    return {
-      message: 'from refresh token',
-    };
+  async refreshToken(reqUser: any): Promise<Tokens> {
+    try {
+      const user = await this.prismaService.user.findUnique({
+        where: {
+          id: reqUser.sub,
+        },
+      });
+
+
+      if (!user) throw new ForbiddenException('access denied');
+
+      const compareRt = await argon.verify(user.rtHash, reqUser.refresh_token);
+      if (!compareRt) throw new ForbiddenException('access denied');
+
+      // create tokens
+      const tokens = await this.getTokens(
+        user.id,
+        user.email,
+        user.licenseExpiredDate,
+      );
+      
+      // update user's RT hash
+      await this.updateRtHash(user.id, tokens.rt);
+      return tokens;
+    } catch (error) {
+      return error;
+    }
   }
 
   // ----------------
@@ -121,7 +144,7 @@ export class AuthService {
         expiresIn: 60 * 15,
       }),
       this.jwtService.signAsync(payload, {
-        secret: this.configService.get('ACCESS_TOKEN_SECRET'),
+        secret: this.configService.get('REFRESH_TOKEN_SECRET'),
         expiresIn: 60 * 60 * 24 * 7,
       }),
     ]);
@@ -136,7 +159,6 @@ export class AuthService {
         where: { id: userId },
         data: { rtHash },
       });
-      return;
     } catch (error) {
       return error;
     }
