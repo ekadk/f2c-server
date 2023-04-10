@@ -35,6 +35,8 @@ export class AuthService {
       const tokens = await this.getTokens(
         user.id,
         user.email,
+        user.licenseKey,
+        user.licenseExpiredDate.toJSON(),
       );
 
       // update user's RT hash
@@ -65,6 +67,8 @@ export class AuthService {
     const tokens = await this.getTokens(
       user.id,
       user.email,
+      user.licenseKey,
+      user.licenseExpiredDate.toJSON(),
     );
 
     // update user's RT hash
@@ -103,7 +107,9 @@ export class AuthService {
       const tokens = await this.getTokens(
         user.id,
         user.email,
-      ); 
+        user.licenseKey,
+        user.licenseExpiredDate.toJSON(),
+      );
 
       // update user's RT hash
       await this.updateRtHash(user.id, tokens.rt);
@@ -124,10 +130,14 @@ export class AuthService {
   async getTokens(
     userId: string,
     email: string,
+    licenseKey: string,
+    licenseExpiredDate: string,
   ) {
     const payload = {
       sub: userId,
       email,
+      licenseKey,
+      licenseExpiredDate,
     };
 
     const [at, rt] = await Promise.all([
