@@ -34,7 +34,7 @@ export class LicenseService {
       });
 
       return {
-        message: 'license key added!',
+        message: 'license key added!', 
       };
     } catch (error) {
       return error;
