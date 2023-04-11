@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { FigmaComponentService } from './figma-component.service';
 import { CreateFigmaComponentDto } from './dto/create-figma-component.dto';
 import { UpdateFigmaComponentDto } from './dto/update-figma-component.dto';
@@ -11,22 +20,28 @@ export class FigmaComponentController {
   constructor(private readonly figmaComponentService: FigmaComponentService) {}
 
   @Post()
-  create(@GetUserId() userId: string, @Body() createFigmaComponentDto: CreateFigmaComponentDto) {
+  create(
+    @GetUserId() userId: string,
+    @Body() createFigmaComponentDto: CreateFigmaComponentDto,
+  ) {
     return this.figmaComponentService.create(userId, createFigmaComponentDto);
   }
 
   @Get()
-  findAll() {
-    return this.figmaComponentService.findAll();
+  findAll(@GetUserId() userId: string) {
+    return this.figmaComponentService.findAll(userId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.figmaComponentService.findOne(+id);
+  findOne(@GetUserId() userId: string, @Param('id') id: string) {
+    return this.figmaComponentService.findOne(userId, id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFigmaComponentDto: UpdateFigmaComponentDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateFigmaComponentDto: UpdateFigmaComponentDto,
+  ) {
     return this.figmaComponentService.update(+id, updateFigmaComponentDto);
   }
 

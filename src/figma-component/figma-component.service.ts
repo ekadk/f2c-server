@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateFigmaComponentDto } from './dto/create-figma-component.dto';
 import { UpdateFigmaComponentDto } from './dto/update-figma-component.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -24,12 +24,29 @@ export class FigmaComponentService {
     }
   }
 
-  findAll() {
-    return `This action returns all figmaComponent`;
+  async findAll(userId: string) {
+    try {
+      const figmaComponents = await this.prismaService.figmaComponent.findMany({
+        where: { userId },
+      });
+      return figmaComponents;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} figmaComponent`;
+  async findOne(userId: string, id: string) {
+    try {
+      const figmaComponent = await this.prismaService.figmaComponent.findFirst({
+        where: { userId, id },
+      });
+
+      if (!figmaComponent) throw new NotFoundException('component not found!');
+
+      return figmaComponent;
+    } catch (error) {
+      throw error;
+    }
   }
 
   update(id: number, updateFigmaComponentDto: UpdateFigmaComponentDto) {
