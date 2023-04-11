@@ -1,15 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { FigmaComponentService } from './figma-component.service';
 import { CreateFigmaComponentDto } from './dto/create-figma-component.dto';
 import { UpdateFigmaComponentDto } from './dto/update-figma-component.dto';
+import { LicenseGuard } from 'src/license/guards/license.guard';
+import { GetUserId } from 'src/common/decorator/get-user-id.decorator';
 
+@UseGuards(LicenseGuard)
 @Controller('figma-component')
 export class FigmaComponentController {
   constructor(private readonly figmaComponentService: FigmaComponentService) {}
 
   @Post()
-  create(@Body() createFigmaComponentDto: CreateFigmaComponentDto) {
-    return this.figmaComponentService.create(createFigmaComponentDto);
+  create(@GetUserId() userId: string, @Body() createFigmaComponentDto: CreateFigmaComponentDto) {
+    return this.figmaComponentService.create(userId, createFigmaComponentDto);
   }
 
   @Get()

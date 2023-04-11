@@ -1,11 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { CreateFigmaComponentDto } from './dto/create-figma-component.dto';
 import { UpdateFigmaComponentDto } from './dto/update-figma-component.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class FigmaComponentService {
-  create(createFigmaComponentDto: CreateFigmaComponentDto) {
-    return 'This action adds a new figmaComponent';
+  constructor(private prismaService: PrismaService) {}
+
+  async create(
+    userId: string,
+    createFigmaComponentDto: CreateFigmaComponentDto,
+  ) {
+    try {
+      const figmaComponent = await this.prismaService.figmaComponent.create({
+        data: {
+          data: createFigmaComponentDto.data,
+          userId,
+        },
+      });
+      return figmaComponent;
+    } catch (error) {
+      throw error;
+    }
   }
 
   findAll() {
