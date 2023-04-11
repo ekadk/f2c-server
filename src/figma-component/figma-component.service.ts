@@ -76,7 +76,21 @@ export class FigmaComponentService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} figmaComponent`;
+  async remove(userId: string, id: string) {
+    try {
+      const figmaComponent = await this.prismaService.figmaComponent.findFirst({
+        where: { userId, id },
+      });
+      if (!figmaComponent) throw new NotFoundException('component not found!');
+
+      await this.prismaService.figmaComponent.delete({
+        where: { id },
+      });
+      return {
+        message: 'figma component deleted',
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 }

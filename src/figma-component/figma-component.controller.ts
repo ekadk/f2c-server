@@ -51,7 +51,7 @@ export class FigmaComponentController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.figmaComponentService.remove(+id);
+  remove(@GetUserId() userId: string, @Param('id') id: string) {
+    return this.figmaComponentService.remove(userId, id);
   }
 }
