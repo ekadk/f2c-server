@@ -39,10 +39,15 @@ export class FigmaComponentController {
 
   @Patch(':id')
   update(
+    @GetUserId() userId: string,
     @Param('id') id: string,
     @Body() updateFigmaComponentDto: UpdateFigmaComponentDto,
   ) {
-    return this.figmaComponentService.update(+id, updateFigmaComponentDto);
+    return this.figmaComponentService.update(
+      userId,
+      id,
+      updateFigmaComponentDto,
+    );
   }
 
   @Delete(':id')

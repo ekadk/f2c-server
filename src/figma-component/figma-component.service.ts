@@ -40,17 +40,40 @@ export class FigmaComponentService {
       const figmaComponent = await this.prismaService.figmaComponent.findFirst({
         where: { userId, id },
       });
-
       if (!figmaComponent) throw new NotFoundException('component not found!');
-
       return figmaComponent;
     } catch (error) {
       throw error;
     }
   }
 
-  update(id: number, updateFigmaComponentDto: UpdateFigmaComponentDto) {
-    return `This action updates a #${id} figmaComponent`;
+  async update(
+    userId: string,
+    id: string,
+    updateFigmaComponentDto: UpdateFigmaComponentDto,
+  ) {
+    try {
+      const figmaComponent = await this.prismaService.figmaComponent.findFirst({
+        where: { userId, id },
+      });
+      if (!figmaComponent) throw new NotFoundException('component not found!');
+
+      if (!updateFigmaComponentDto.data) return { message: 'nothing change' };
+
+      const updatedFigmaComponent =
+        await this.prismaService.figmaComponent.update({
+          where: { id },
+          data: {
+            data: updateFigmaComponentDto.data,
+          },
+        });
+
+      return {
+        ...updatedFigmaComponent,
+      };
+    } catch (error) {
+      throw error;
+    }
   }
 
   remove(id: number) {
